@@ -48,6 +48,7 @@ public class LocationFragment extends Fragment implements
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+    protected final static String KEY_LOCATION = "location";
 
     // latitude and longitude
     double latitude = 17.385044;
@@ -65,11 +66,17 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updateValuesFromBundle(savedInstanceState);
+
         buildGoogleApiClient();
         createLocationRequest();
+
         buildLocationSettingsRequest();
-        mGoogleApiClient.connect();
         checkLocationSettings();
+
+        mGoogleApiClient.connect();
+
+
     }
 
     @Override
@@ -78,10 +85,16 @@ public class LocationFragment extends Fragment implements
         // inflate and return the layout
         View v = inflater.inflate(R.layout.fragment_location, container,
                 false);
+        initializeMap(v, savedInstanceState);
+
+        mGoogleApiClient.connect();
+        return v;
+    }
+
+    protected void initializeMap(View v, Bundle savedInstanceState){
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
-        mMapView.onResume();// needed to get the map to display immediately
+        mMapView.onResume();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -90,9 +103,7 @@ public class LocationFragment extends Fragment implements
         }
 
         googleMap = mMapView.getMap();
-
         addMarkers();
-        return v;
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -171,6 +182,15 @@ public class LocationFragment extends Fragment implements
                 .newCameraPosition(cameraPosition));
     }
 
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.keySet().contains(KEY_LOCATION)) {
+                mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            }
+            addMarkers();
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -187,6 +207,10 @@ public class LocationFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        mGoogleApiClient.connect();
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+        }
     }
 
     @Override
@@ -221,7 +245,7 @@ public class LocationFragment extends Fragment implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.i(TAG, "Connection suspended");
     }
 
     @Override
@@ -233,7 +257,7 @@ public class LocationFragment extends Fragment implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
 
     @Override
@@ -261,6 +285,11 @@ public class LocationFragment extends Fragment implements
                         "not created.");
                 break;
         }
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
+        super.onSaveInstanceState(savedInstanceState);
     }
 }
 
