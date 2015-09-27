@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00695C</color>
+    <color name="colorPrimaryDark">#004D40</color>
+    <color name="accentColor">#FFFFFF</color>
+
+    <color name="application_background">#FFFFFF</color>
+
+    <color name="textColor">#00695C</color>
+    <color name="text_hint_color">#D4D6D7</color>
+
+    <color name="orange_color">#FF5722</color>
+
+    <color name="grayish_blue">#8899A6</color>
+    <color name="background_beige">#FFEDD4</color>
+    <color name="red_font">#EC5959</color>
+    <color name="green">#00A79B</color>
+    <color name="white">#FFF</color>
+    <color name="mopub_brown">#371F1F</color>
+
+    <color name="full_transparent">#00000000</color>
+    <color name="not_so_transparent">#44000000</color>
+    <color name="even_less_transparent">#66000000</color>
+    <color name="white_smoke">#F7F7F7</color>
+
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="main_color_green">#00b863</color>
+    <color name="main_color_gray_dk">#3b3b3b</color>
+    <color name="main_color_gray_lt">#acacac</color>
+    <color name="main_color_gray">#7d7d7d</color>
+    <color name="gray_light">#e8e8e8</color>
+
+</resources>
