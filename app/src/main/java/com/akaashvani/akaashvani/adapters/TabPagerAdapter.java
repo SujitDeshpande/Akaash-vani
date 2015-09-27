@@ -13,7 +13,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
     final int PAGE_COUNT = 2;
     //private final String mGroupObjId;
-    private String tabTitles[] = new String[]{"Chat", "Location"};
+    private String tabTitles[] = new String[]{"Location", "Chat"};
     private Context context;
 
     public TabPagerAdapter(FragmentManager fm, Context context) {
