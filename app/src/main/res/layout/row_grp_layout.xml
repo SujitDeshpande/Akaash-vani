@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="6dp"
+            android:background="@drawable/custom_bg"
+            android:id="@+id/linlayout"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageview1"
+                android:layout_gravity="center"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="1dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/users" />
+
+            <TextView
+                android:id="@+id/groupName_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:maxLines="3"
+                android:drawableRight="@drawable/arrow"
+                android:text="Dummy Text "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+        </LinearLayout>
+    <View
+        android:id="@+id/SplitLine_hor1"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/linlayout"
+        android:layout_height= "2dp"
+        android:background="@color/not_so_transparent" />
+
+</RelativeLayout>

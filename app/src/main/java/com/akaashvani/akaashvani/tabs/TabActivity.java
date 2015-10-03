@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.adapters.TabPagerAdapter;
@@ -20,6 +22,7 @@ public class TabActivity
     protected final static String KEY_LOCATION = "location";
     protected Location mCurrentLocation;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class TabActivity
         //TextView toolbarTextView = (TextView) toolbar.findViewById(R.id.toolbar_heading);
         //toolbarTextView.setText(getIntent().getStringExtra("groupName"));
         setSupportActionBar(toolbar);
+        toolbar.showOverflowMenu();
 
         //String strGroupObjId = getIntent().getStringExtra("groupObjId");
 
@@ -44,6 +48,26 @@ public class TabActivity
         tabLayout.setupWithViewPager(viewPager);
 
         updateValuesFromBundle(savedInstanceState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_tabs, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.new_geofence) {
+            return true;
+        } else if (id == R.id.help) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
@@ -77,6 +101,16 @@ public class TabActivity
                         break;
                     case Activity.RESULT_CANCELED:
                         Log.i(TAG, "User chose not to make required location settings changes.");
+                        break;
+                }
+            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
+                switch (resultCode) {
+                    // If Google Play services resolved the problem
+                    case Activity.RESULT_OK:
+                        Log.d(TAG, "Connected to Google Play services");
+                        break;
+                    default:
+                        Log.d(TAG, "Could not connect to Google Play services");
                         break;
                 }
                 break;

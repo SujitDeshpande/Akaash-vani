@@ -1,6 +1,16 @@
 package com.akaashvani.akaashvani.fragments;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,13 +18,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.akaashvani.akaashvani.R;
+import com.akaashvani.akaashvani.geofence.Constants;
+import com.akaashvani.akaashvani.geofence.GeofenceTransitionsIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -27,8 +43,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class LocationFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
@@ -39,6 +60,10 @@ public class LocationFragment extends Fragment implements
     private static final String TAG = "Location-Fragment";
     MapView mMapView;
     private GoogleMap googleMap;
+    private CameraPosition cameraPosition;
+    private int counter = 1;
+    private BitmapDrawable d, e;
+    private Bitmap bmp1, bmp2;
 
     protected GoogleApiClient mGoogleApiClient;
     protected LocationRequest mLocationRequest;
@@ -51,9 +76,16 @@ public class LocationFragment extends Fragment implements
     protected final static String KEY_LOCATION = "location";
 
     // latitude and longitude
-    double latitude = 17.385044;
-    double longitude = 78.486671;
+    double latitude = 12.8963272;
+    double longitude = 77.5557918;
     MarkerOptions marker;
+
+    protected ArrayList<Geofence> mGeofenceList;
+    private boolean mGeofencesAdded;
+    private PendingIntent mGeofencePendingIntent;
+    private SharedPreferences mSharedPreferences;
+    private Circle mapCircle;
+    private LatLng myLatLng;
 
     public static LocationFragment newInstance(String param1, String param2) {
         LocationFragment fragment = new LocationFragment();
@@ -66,7 +98,17 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         updateValuesFromBundle(savedInstanceState);
+
+        mGeofenceList = new ArrayList<Geofence>();
+        mGeofencePendingIntent = null;
+        mSharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,
+                getActivity().MODE_PRIVATE);
+        mGeofencesAdded = mSharedPreferences.getBoolean(Constants.GEOFENCES_ADDED_KEY, false);
+
+        initializeIcons();
+        populateGeofenceList();
 
         buildGoogleApiClient();
         createLocationRequest();
@@ -75,8 +117,6 @@ public class LocationFragment extends Fragment implements
         checkLocationSettings();
 
         mGoogleApiClient.connect();
-
-
     }
 
     @Override
@@ -91,7 +131,16 @@ public class LocationFragment extends Fragment implements
         return v;
     }
 
-    protected void initializeMap(View v, Bundle savedInstanceState){
+    protected void initializeIcons(){
+        // Changing marker icon
+        d = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_marker).getCurrent();
+        bmp1 = Bitmap.createScaledBitmap(d.getBitmap(), d.getBitmap().getWidth() / 7, d.getBitmap().getHeight() / 7, false);
+        e = (BitmapDrawable) getResources().getDrawable(R.drawable.me).getCurrent();
+        bmp2 = Bitmap.createScaledBitmap(e.getBitmap(), (int) (e.getBitmap().getWidth() / 1), (int) (e.getBitmap().getHeight() / 1), false);
+        bmp2 = getRoundedShape(bmp2);
+    }
+
+    protected void initializeMap(View v, Bundle savedInstanceState) {
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
@@ -103,8 +152,161 @@ public class LocationFragment extends Fragment implements
         }
 
         googleMap = mMapView.getMap();
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                addMarkers();
+                setCamera();
+                updateCircle(myLatLng);
+                return true;
+            }
+        });
         addMarkers();
+        setCamera();
+        updateCircle(myLatLng);
     }
+
+    protected void setCamera(){
+
+        if (mCurrentLocation != null) {
+            myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        } else {
+            myLatLng = new LatLng(latitude, longitude);
+        }
+        cameraPosition = new CameraPosition.Builder()
+                .target(myLatLng).zoom(17).build();
+        googleMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+    }
+
+    protected void addMarkers() {
+        // create marker
+        googleMap.clear();
+
+        if (mCurrentLocation != null) {
+            marker = new MarkerOptions().position(
+                    new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Hello Maps");
+        } else {
+            marker = new MarkerOptions().position(
+                    new LatLng(latitude, longitude)).title("Hello Maps");
+        }
+
+        marker.icon(BitmapDescriptorFactory.fromBitmap(overlay(bmp1, bmp2)));
+
+        // adding marker
+        googleMap.addMarker(marker);
+
+    }
+
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+
+        int targetWidth = 140;
+        int targetHeight = 140;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth,
+                        targetHeight), null);
+        return targetBitmap;
+    }
+
+    private Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, new Rect(0, 0, 200, 200), new Rect(45, 20, 240, 235), null);
+        return bmOverlay;
+    }
+
+    /*GeoFencing Related Methods Below*/
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(mGeofenceList);
+        return builder.build();
+    }
+
+    public void addGeofencesButtonHandler() {
+        if (!mGoogleApiClient.isConnected()) {
+            Toast.makeText(getActivity(), getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(),
+                    getGeofencePendingIntent()
+            );; // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            logSecurityException(securityException);
+        }
+
+        mGeofencesAdded = !mGeofencesAdded;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(Constants.GEOFENCES_ADDED_KEY, mGeofencesAdded);
+        editor.commit();
+    }
+
+    public void populateGeofenceList() {
+        for (Map.Entry<String, LatLng> entry : Constants.GEOFENCE.entrySet()) {
+
+            mGeofenceList.add(new Geofence.Builder()
+                    .setRequestId(entry.getKey())
+                    .setCircularRegion(
+                            entry.getValue().latitude,
+                            entry.getValue().longitude,
+                            Constants.GEOFENCE_RADIUS_IN_METERS
+                    )
+                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+        }
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(getActivity(), GeofenceTransitionsIntentService.class);
+        return PendingIntent.getService(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void logSecurityException(SecurityException securityException) {
+        Log.e(TAG, "Invalid location permission. " +
+                "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
+    }
+
+    private void updateCircle(LatLng latLng) {
+            //googleMap.clear();
+            mapCircle =
+                    googleMap.addCircle(
+                            new CircleOptions().center(myLatLng).radius(Constants.GEOFENCE_RADIUS_IN_METERS));
+            int baseColor = Color.DKGRAY;
+            mapCircle.setStrokeColor(baseColor);
+            mapCircle.setStrokeWidth(2);
+            mapCircle.setFillColor(Color.argb(50, Color.red(baseColor), Color.green(baseColor),
+                    Color.blue(baseColor)));
+        mapCircle.setCenter(myLatLng);
+        mapCircle.setRadius(Constants.GEOFENCE_RADIUS_IN_METERS); // Convert radius in feet to meters.
+    }
+    /*End GeoFencing Related Methods*/
 
     protected synchronized void buildGoogleApiClient() {
         Log.i(TAG, "Building GoogleApiClient");
@@ -151,35 +353,6 @@ public class LocationFragment extends Fragment implements
                         mLocationSettingsRequest
                 );
         result.setResultCallback(this);
-    }
-
-    protected void addMarkers() {
-        // create marker
-        googleMap.clear();
-        CameraPosition cameraPosition;
-        if (mCurrentLocation != null) {
-            marker = new MarkerOptions().position(
-                    new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title("Hello Maps");
-        } else {
-            marker = new MarkerOptions().position(
-                    new LatLng(latitude, longitude)).title("Hello Maps");
-        }
-
-        // Changing marker icon
-        marker.icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-
-        // adding marker
-        googleMap.addMarker(marker);
-        if (mCurrentLocation != null) {
-            cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).zoom(17).build();
-        } else {
-            cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(latitude, longitude)).zoom(17).build();
-        }
-        googleMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
     }
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
@@ -241,6 +414,7 @@ public class LocationFragment extends Fragment implements
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
+        addGeofencesButtonHandler();
     }
 
     @Override
@@ -252,6 +426,12 @@ public class LocationFragment extends Fragment implements
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         addMarkers();
+        while (counter < 2){
+            setCamera();
+            counter ++;
+        }
+        myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        updateCircle(myLatLng);
         Log.i(TAG, "onLocationChanged " + "Latitude: " + mCurrentLocation.getLatitude() + " Longitude: " + mCurrentLocation.getLongitude());
     }
 
