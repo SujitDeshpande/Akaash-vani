@@ -4,39 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.akaashvani.akaashvani.DetailsActivity"
+    tools:context="com.akaashvani.akaashvani.screens.DetailsActivity"
     tools:showIn="@layout/activity_details">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.akaashvani.akaashvani.circlerefresh.CircleRefreshLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:AniBackColor="#ff8b90af"
-        app:AniForeColor="#ffffffff"
-        app:CircleSmaller="6"
-        android:id="@+id/refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ListView
-            android:background="#ffffffff"
-            android:id="@+id/list"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
+        <com.akaashvani.akaashvani.circlerefresh.CircleRefreshLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            app:AniBackColor="#ff8b90af"
+            app:AniForeColor="#ffffffff"
+            app:CircleSmaller="6">
 
-    </com.akaashvani.akaashvani.circlerefresh.CircleRefreshLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/grp_recycler_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffffff"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/anibackcolor"
-        android:src="@drawable/new_group"/>
+        </com.akaashvani.akaashvani.circlerefresh.CircleRefreshLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/new_group"
+            app:backgroundTint="@color/anibackcolor" />
     </FrameLayout>
 
 </RelativeLayout>

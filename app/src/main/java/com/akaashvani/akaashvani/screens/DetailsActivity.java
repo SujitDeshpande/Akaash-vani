@@ -1,24 +1,24 @@
-package com.akaashvani.akaashvani;
+package com.akaashvani.akaashvani.screens;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 
+import com.akaashvani.akaashvani.R;
+import com.akaashvani.akaashvani.adapters.GroupRecycleViewAdapter;
 import com.akaashvani.akaashvani.circlerefresh.CircleRefreshLayout;
-import com.akaashvani.akaashvani.tabs.TabActivity;
 
-public class DetailsActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class DetailsActivity extends BaseActivity {
 
     private CircleRefreshLayout mRefreshLayout;
-    private ListView mList;
+    private RecyclerView mList;
     private Button mStop;
     private Thread thread;
 
@@ -26,8 +26,8 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
+
+        setToolBarComponents(false);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,16 +38,21 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-        mRefreshLayout = (CircleRefreshLayout) findViewById(R.id.refresh_layout);
-        mList = (ListView) findViewById(R.id.list);
+        mList = (RecyclerView) findViewById(R.id.grp_recycler_list);
+        mList.setLayoutManager(new LinearLayoutManager(DetailsActivity.this));
 
-        String[] strs = {
-                "Office Group",
-                "Friends",
-                "Trekking"
-        };
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strs);
-        mList.setAdapter(adapter);
+        mRefreshLayout = (CircleRefreshLayout) findViewById(R.id.refresh_layout);
+
+        List<String> strings = new ArrayList<String>();
+        strings.add("Office Group");
+        strings.add("Friends");
+        strings.add("Trekking");
+
+        GroupRecycleViewAdapter groupRecycleViewAdapter = new GroupRecycleViewAdapter(DetailsActivity.this, strings);
+        mList.setAdapter(groupRecycleViewAdapter);
+
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strings);
+//        mList.setAdapter(adapter);
 
 
         mRefreshLayout.setOnRefreshListener(
@@ -80,13 +85,6 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 });
 
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), TabActivity.class);
-                view.getContext().startActivity(intent);
-            }
-        });
     }
 
 }

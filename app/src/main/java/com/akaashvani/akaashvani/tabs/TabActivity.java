@@ -6,34 +6,35 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.adapters.TabPagerAdapter;
+import com.akaashvani.akaashvani.screens.BaseActivity;
 
-public class TabActivity
-        extends AppCompatActivity {
+public class TabActivity extends BaseActivity {
 
     protected static final String TAG = "AkaashVani";
     protected final static String KEY_LOCATION = "location";
     protected Location mCurrentLocation;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private boolean showOverFlowMenuBool = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setToolBarComponents(showOverFlowMenuBool);
+
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         //TextView toolbarTextView = (TextView) toolbar.findViewById(R.id.toolbar_heading);
         //toolbarTextView.setText(getIntent().getStringExtra("groupName"));
-        setSupportActionBar(toolbar);
-        toolbar.showOverflowMenu();
+//        setSupportActionBar(toolbar);
+//        toolbar.showOverflowMenu();
 
         //String strGroupObjId = getIntent().getStringExtra("groupObjId");
 

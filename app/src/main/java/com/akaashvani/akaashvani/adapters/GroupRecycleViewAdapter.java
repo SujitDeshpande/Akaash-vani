@@ -11,14 +11,14 @@ import android.widget.TextView;
 
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.tabs.TabActivity;
-import java.security.acl.Group;
+
 import java.util.List;
 
 public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleViewAdapter.GroupNameViewHolder> {
-    List<Group> data;
+    List<String> data;
     Context mContext;
 
-    public GroupRecycleViewAdapter(Context context, List<Group> groups) {
+    public GroupRecycleViewAdapter(Context context, List<String> groups) {
         data = groups;
         mContext = context;
     }
@@ -32,10 +32,10 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     @Override
     public void onBindViewHolder(GroupNameViewHolder holder, int position) {
-        final Group currentGrp = data.get(position);
+//        final Group currentGrp = data.get(position);
 
-        if (!TextUtils.isEmpty(currentGrp.getName())) {
-            holder.mGrpNameTextView.setText(currentGrp.getName());
+        if (!TextUtils.isEmpty(data.get(position))) {
+            holder.mGrpNameTextView.setText(data.get(position));
         }
 
         holder.mGrpNameTextView.setOnClickListener(new View.OnClickListener() {
