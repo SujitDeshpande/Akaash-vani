@@ -3,6 +3,7 @@ package com.akaashvani.akaashvani;
 import android.app.Application;
 
 import com.akaashvani.akaashvani.preference.PreferenceUtil;
+import com.pubnub.api.Pubnub;
 
 /**
  * Created by agoel on 04/10/15.
@@ -10,8 +11,9 @@ import com.akaashvani.akaashvani.preference.PreferenceUtil;
 public class AkaashVaniApplication extends Application {
 
     private static final String TAG = AkaashVaniApplication.class.getSimpleName();
-
     private static AkaashVaniApplication mApplication;
+    Pubnub pubnub;
+    private String userId;
 
 
     @Override
@@ -43,4 +45,17 @@ public class AkaashVaniApplication extends Application {
         return mApplication;
     }
 
+
+    public Pubnub getPubNub() {
+        return pubnub;
+    }
+
+    public void setPubNub(Pubnub pubnub) {
+        this.pubnub = pubnub;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+        pubnub.setUUID(userId);
+    }
 }
