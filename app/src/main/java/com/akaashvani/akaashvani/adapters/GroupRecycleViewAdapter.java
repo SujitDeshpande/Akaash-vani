@@ -36,7 +36,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
     public GroupNameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_grp_layout, parent, false);
         image = (ImageView) view.findViewById(R.id.imageview1);
-        e = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.users).getCurrent();
+        e = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.groups_icon).getCurrent();
         bmp2 = Bitmap.createScaledBitmap(e.getBitmap(), (int) (e.getBitmap().getWidth() / 1), (int) (e.getBitmap().getHeight() / 1), false);
         bmp2 = getRoundedShape(bmp2);
         image.setImageBitmap(bmp2);
@@ -103,11 +103,6 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
         public GroupNameViewHolder(View itemView) {
             super(itemView);
             mGrpNameTextView = (TextView) itemView.findViewById(R.id.groupName_textview);
-/*            image = (ImageView) itemView.findViewById(R.id.imageview1);
-            e = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.users).getCurrent();
-            bmp2 = Bitmap.createScaledBitmap(e.getBitmap(), (int) (e.getBitmap().getWidth() / 1), (int) (e.getBitmap().getHeight() / 1), false);
-            bmp2 = getRoundedShape(bmp2);
-            image.setImageBitmap(bmp2);*/
         }
     }
 }

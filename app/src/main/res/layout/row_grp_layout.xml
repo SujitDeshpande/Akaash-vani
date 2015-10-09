@@ -19,8 +19,7 @@
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:layout_margin="1dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/users" />
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/groupName_textview"

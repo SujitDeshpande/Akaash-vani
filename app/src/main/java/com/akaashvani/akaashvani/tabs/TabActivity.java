@@ -4,15 +4,24 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.akaashvani.akaashvani.R;
-import com.akaashvani.akaashvani.adapters.TabPagerAdapter;
+import com.akaashvani.akaashvani.adapters.PagerModelManager;
+import com.akaashvani.akaashvani.fragments.ChatFragment;
+import com.akaashvani.akaashvani.fragments.GuideFragment;
+import com.akaashvani.akaashvani.fragments.LocationFragment;
 import com.akaashvani.akaashvani.screens.BaseActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import github.chenupt.multiplemodel.viewpager.ModelPagerAdapter;
+import github.chenupt.springindicator.SpringIndicator;
+import github.chenupt.springindicator.viewpager.ScrollerViewPager;
 
 public class TabActivity extends BaseActivity {
 
@@ -39,16 +48,52 @@ public class TabActivity extends BaseActivity {
         //String strGroupObjId = getIntent().getStringExtra("groupObjId");
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(),
-                TabActivity.this));
+        //ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ScrollerViewPager viewPager = (ScrollerViewPager) findViewById(R.id.view_pager);
+        SpringIndicator springIndicator = (SpringIndicator) findViewById(R.id.indicator);
+        //viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(), TabActivity.this));
+
+        PagerModelManager manager = new PagerModelManager();
+        manager.addCommonFragment(GuideFragment.class, getBgRes(), getTitles());
+        ModelPagerAdapter adapter = new ModelPagerAdapter(getSupportFragmentManager(), manager){
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return LocationFragment.newInstance("" + position, "");
+                    case 1:
+                        return ChatFragment.newInstance("" + position, "");
+                    default:
+                        return LocationFragment.newInstance("" + position, "");
+                }
+            }
+        };
+        viewPager.setAdapter(adapter);
+        viewPager.fixScrollSpeed();
+
+        // just set viewPager
+        springIndicator.setViewPager(viewPager);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        /*TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);*/
 
         updateValuesFromBundle(savedInstanceState);
+    }
+
+    private List<String> getTitles(){
+        List<String> list = new ArrayList<String>();
+        list.add("1");
+        list.add("2");
+        return list;
+    }
+
+    private List<Integer> getBgRes(){
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(R.drawable.bg1);
+        list.add(R.drawable.bg2);
+        return list;
     }
 
     @Override

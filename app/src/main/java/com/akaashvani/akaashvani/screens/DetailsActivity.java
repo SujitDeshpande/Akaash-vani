@@ -66,7 +66,7 @@ public class DetailsActivity extends BaseActivity {
                                 //super.run();
                                 try {
                                     synchronized (this) {
-                                        wait(5000);
+                                        wait(3000);
                                         mRefreshLayout.finishRefreshing();
                                         this.notify();
                                     }
