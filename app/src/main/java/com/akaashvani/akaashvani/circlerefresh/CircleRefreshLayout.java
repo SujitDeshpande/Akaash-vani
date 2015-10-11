@@ -23,7 +23,7 @@ public class CircleRefreshLayout extends FrameLayout {
     private static final long BACK_TOP_DUR = 600;
     private static final long REL_DRAG_DUR = 200;
 
-    private int mHeaderBackColor = 0xff8b90af;
+    private int mHeaderBackColor = 0x0099cc;
     private int mHeaderForeColor = 0xffffffff;
     private int mHeaderCircleSmaller = 6;
 

@@ -90,7 +90,7 @@ public class AnimationView extends View {
         mBackPaint = new Paint();
         mBackPaint.setAntiAlias(true);
         mBackPaint.setStyle(Paint.Style.FILL);
-        mBackPaint.setColor(0xff8b90af);
+        mBackPaint.setColor(0x0099cc);
 
         mBallPaint = new Paint();
         mBallPaint.setAntiAlias(true);

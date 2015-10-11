@@ -15,7 +15,7 @@
             android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:AniBackColor="#ff8b90af"
+            app:AniBackColor="#0099cc"
             app:AniForeColor="#ffffffff"
             app:CircleSmaller="6">
 
@@ -36,7 +36,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/new_group"
-            app:backgroundTint="@color/anibackcolor" />
+            app:backgroundTint="@color/apptheme" />
     </FrameLayout>
 
 </RelativeLayout>

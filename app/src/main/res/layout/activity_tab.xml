@@ -13,7 +13,7 @@
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/anibackcolor"
+        android:background="@color/apptheme"
         style="@style/MyCustomTabLayout"
         app:tabGravity="fill"
         app:tabMode="fixed"
