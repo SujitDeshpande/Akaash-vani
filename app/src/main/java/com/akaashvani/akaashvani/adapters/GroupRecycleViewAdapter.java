@@ -47,8 +47,6 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     @Override
     public void onBindViewHolder(GroupNameViewHolder holder, int position) {
-//        final Group currentGrp = data.get(position);
-
         if (!TextUtils.isEmpty((CharSequence) data.get(position))) {
             holder.mGrpNameTextView.setText((CharSequence) data.get(position));
         }
