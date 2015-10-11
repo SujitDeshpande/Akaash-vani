@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.tabs.TabActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleViewAdapter.GroupNameViewHolder> {
@@ -27,7 +28,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
     private BitmapDrawable d, e;
     ImageView image;
 
-    public GroupRecycleViewAdapter(Context context, List<String> groups) {
+    public GroupRecycleViewAdapter(Context context, ArrayList<String> groups) {
         data = groups;
         mContext = context;
     }
@@ -48,8 +49,8 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
     public void onBindViewHolder(GroupNameViewHolder holder, int position) {
 //        final Group currentGrp = data.get(position);
 
-        if (!TextUtils.isEmpty(data.get(position))) {
-            holder.mGrpNameTextView.setText(data.get(position));
+        if (!TextUtils.isEmpty((CharSequence) data.get(position))) {
+            holder.mGrpNameTextView.setText((CharSequence) data.get(position));
         }
 
         holder.mGrpNameTextView.setOnClickListener(new View.OnClickListener() {
