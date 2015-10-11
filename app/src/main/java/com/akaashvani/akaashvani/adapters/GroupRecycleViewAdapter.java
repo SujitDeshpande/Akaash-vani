@@ -70,8 +70,8 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
 
-        int targetWidth = 75;
-        int targetHeight = 75;
+        int targetWidth = 200;
+        int targetHeight = 200;
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
                 targetHeight, Bitmap.Config.ARGB_8888);
 
