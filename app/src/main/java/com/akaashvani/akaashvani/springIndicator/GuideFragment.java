@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.akaashvani.akaashvani.fragments;
+package com.akaashvani.akaashvani.springIndicator;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

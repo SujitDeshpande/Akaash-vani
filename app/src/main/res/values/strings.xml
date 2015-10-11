@@ -3,6 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="parse_app_id">cDaiACXWaJtOkXdkUkLPQ8MSZ664oNIUAxe8HKi2</string>
+    <string name="parse_client_key">UDITep9Xx7MYm0fF5ZdKICW8kCTeoiPX900aD3fE</string>
+    <string name="facebook_app_id">476063855909115</string>
     <string name="google_maps_key">AIzaSyD3iDbfuLunFVV2w7Mo2EhjnrJ7rFCGNrA</string>
     <string name="add_network_markers">Add Network Markers</string>
 
@@ -38,4 +41,11 @@
 
     <string name="new_geofence">New Geofence</string>
     <string name="help">Help</string>
+
+    <string name="sign_in_with_phone">Sign in with Phone</string>
+    <string name="something_went_wrong">Something went wrong, Please try again later.</string>
+
+    <string name="title_activity_splashscreen">SplashscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">Akaash\nVani</string>
 </resources>

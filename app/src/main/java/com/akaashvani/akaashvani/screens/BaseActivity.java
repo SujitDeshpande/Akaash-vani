@@ -41,20 +41,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 toolbar.showOverflowMenu();
             }
         }
-
-
-
-//        ImageView editProfile = (ImageView) toolbar.findViewById(R.id.toolbar_settings);
-//        editProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(BaseActivity.this, "Edit profile clicled.", Toast.LENGTH_SHORT).show();
-//
-//                Intent intent = new Intent(BaseActivity.this, ProfileMainActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
     }
 
     /**

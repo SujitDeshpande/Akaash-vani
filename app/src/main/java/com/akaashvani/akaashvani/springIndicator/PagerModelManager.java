@@ -1,4 +1,4 @@
-package com.akaashvani.akaashvani.adapters;
+package com.akaashvani.akaashvani.springIndicator;
 
 /*
  * Copyright 2015 chenupt

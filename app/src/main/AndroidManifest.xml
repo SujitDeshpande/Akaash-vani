@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.akaashvani.akaashvani" >
+    package="com.akaashvani.akaashvani">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -23,15 +23,14 @@
         android:protectionLevel="signature" />
 
     <application
+        android:name=".AkaashVaniApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name=".AkaashVaniApplication"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".tabs.TabActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"/>
 
         <service android:name=".geofence.GeofenceTransitionsIntentService" />
 
@@ -45,7 +44,29 @@
         <activity
             android:name=".screens.DetailsActivity"
             android:label="@string/title_activity_details"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="625310be8257bed27f87a8455b7c375209b05622" />
+
+        <activity android:name=".screens.LoginActivity"/>
+
+        <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="@string/parse_app_id" />
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="@string/parse_client_key" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name=".screens.SplashscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_splashscreen"
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

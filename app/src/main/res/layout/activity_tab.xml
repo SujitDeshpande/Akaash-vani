@@ -9,7 +9,7 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar" />
 
-<!--    <android.support.design.widget.TabLayout
+    <android.support.design.widget.TabLayout
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,9 +24,9 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1"
-        android:background="@android:color/white" />-->
+        android:background="@android:color/white" />
 
-    <FrameLayout
+<!--    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -47,6 +47,6 @@
             android:layout_height="56dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp" />
-    </FrameLayout>
+    </FrameLayout>-->
 
 </LinearLayout>
