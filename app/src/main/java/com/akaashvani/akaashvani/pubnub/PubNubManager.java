@@ -1,7 +1,8 @@
-package com.akaashvani.akaashvani;
+package com.akaashvani.akaashvani.pubnub;
 
 import android.util.Log;
 
+import com.akaashvani.akaashvani.AkaashVaniApplication;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;

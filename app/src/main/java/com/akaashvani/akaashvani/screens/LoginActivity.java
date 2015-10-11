@@ -27,7 +27,7 @@ public class LoginActivity extends BaseActivity implements ParseUserAPI.Callback
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         final LoginButton digitsButton = (LoginButton) findViewById(R.id.phone_button);
-        digitsButton.setBackgroundColor(Color.BLUE);
+        digitsButton.setBackgroundColor(Color.parseColor("#0099cc"));
 
         digitsButton.setCallback(new AuthCallback() {
             @Override

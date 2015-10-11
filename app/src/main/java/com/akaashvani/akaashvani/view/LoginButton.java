@@ -19,12 +19,11 @@ public class LoginButton extends DigitsAuthButton {
         init();
     }
 
-
-
     public LoginButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
+
     private void init() {
         if (isInEditMode()){
             return;
