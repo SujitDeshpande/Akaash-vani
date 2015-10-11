@@ -125,17 +125,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        /*
-         * if (progressDialog != null && progressDialog.isShowing()) progressDialog.cancel();
-		 *
-		 * progressMessage = message;
-		 *
-		 * progressDialog = null; progressDialog = ProgressDialog.show(BaseFragmentActivity.this, null, null);
-		 * progressDialog.setContentView(R.layout.progressbar_activity); ((TextView) progressDialog.findViewById(R.id.textmsg)).setText(message);
-		 * progressDialog.setMessage("Please wait..."); progressDialog.setCancelable(false);
-		 *
-		 * progressDialog.show();
-		 */
     }
 
     public void dismissProgressDialog() {

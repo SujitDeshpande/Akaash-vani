@@ -37,7 +37,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
     public GroupNameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_grp_layout, parent, false);
         image = (ImageView) view.findViewById(R.id.imageview1);
-        e = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.groups_icon).getCurrent();
+        e = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.group_icon).getCurrent();
         bmp2 = Bitmap.createScaledBitmap(e.getBitmap(), (int) (e.getBitmap().getWidth() / 1), (int) (e.getBitmap().getHeight() / 1), false);
         bmp2 = getRoundedShape(bmp2);
         image.setImageBitmap(bmp2);
@@ -70,8 +70,8 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
 
-        int targetWidth = 100;
-        int targetHeight = 100;
+        int targetWidth = 75;
+        int targetHeight = 75;
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
                 targetHeight, Bitmap.Config.ARGB_8888);
 

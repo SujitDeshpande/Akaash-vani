@@ -89,7 +89,7 @@ public class DetailsActivity extends BaseActivity implements parseGroupsAPI.Call
     private void getUserGroups() {
 
         if (Utils.checkNetworkConnection(DetailsActivity.this)) {
-            showProgressDialog(DetailsActivity.this, "Getting user group ...");
+            //showProgressDialog(DetailsActivity.this, "Getting user group ...");
             parseGroupsAPI parseGroupsAPI = new parseGroupsAPI(this);
             parseGroupsAPI.getMyGroups();
         } else {
