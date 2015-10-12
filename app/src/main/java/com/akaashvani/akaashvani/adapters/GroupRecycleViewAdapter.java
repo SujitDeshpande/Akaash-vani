@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +18,21 @@ import android.widget.TextView;
 
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.tabs.TabActivity;
+import com.parse.ParseObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleViewAdapter.GroupNameViewHolder> {
     List<String> data;
+    List<ParseObject> parseData;
     Context mContext;
     private Bitmap bmp1, bmp2;
     private BitmapDrawable d, e;
     ImageView image;
 
-    public GroupRecycleViewAdapter(Context context, ArrayList<String> groups) {
-        data = groups;
+    public GroupRecycleViewAdapter(Context context, ArrayList<ParseObject> groups) {
+        parseData = groups;
         mContext = context;
     }
 
@@ -47,17 +50,17 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     @Override
     public void onBindViewHolder(GroupNameViewHolder holder, final int position) {
-        if (!TextUtils.isEmpty((CharSequence) data.get(position))) {
-            holder.mGrpNameTextView.setText((CharSequence) data.get(position));
+        if (!TextUtils.isEmpty(parseData.get(position).getString("name"))) {
+            holder.mGrpNameTextView.setText(parseData.get(position).getString("name"));
         }
 
         holder.mGrpNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TabActivity.class);
-                //intent.putExtra("groupObjId", currentGrp.getObjectId());
-                intent.putExtra("groupName", (CharSequence) data.get(position));
-
+                intent.putExtra("groupID", parseData.get(position).getObjectId().toString());
+                intent.putExtra("groupName", parseData.get(position).getString("name"));
+                Log.i("TAG", parseData.get(position).getObjectId().toString());
                 mContext.startActivity(intent);
             }
         });
@@ -65,7 +68,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return parseData.size();
     }
 
     public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {

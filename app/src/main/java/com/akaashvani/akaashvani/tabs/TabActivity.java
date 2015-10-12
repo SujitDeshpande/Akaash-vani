@@ -69,8 +69,8 @@ public class TabActivity extends BaseActivity {
 
         //Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-
-        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(), TabActivity.this, getIntent().getStringExtra("groupName")));
+        Log.i(TAG, "GroupID"+getIntent().getStringExtra("groupID"));
+        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(), TabActivity.this, getIntent().getStringExtra("groupName"), getIntent().getStringExtra("groupID")));
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);

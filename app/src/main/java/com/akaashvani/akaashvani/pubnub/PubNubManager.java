@@ -35,13 +35,14 @@ public class PubNubManager {
 
 
     public static void broadcastLocation(Pubnub pubnub, String channelName, double latitude,
-                                         double longitude, String user, String groupName) {
+                                         double longitude, String user, String groupName, String groupID) {
         JSONObject message = new JSONObject();
         try {
-            message.put("lat", latitude);
-            message.put("lon", longitude);
-            message.put("user", user);
-            message.put("group", groupName);
+            message.put("latitude", latitude);
+            message.put("longitude", longitude);
+            message.put("userName", user);
+            message.put("groupName", groupName);
+            message.put("groupID", groupID);
         } catch (JSONException e) {
             Log.e(TAG, e.toString());
         }

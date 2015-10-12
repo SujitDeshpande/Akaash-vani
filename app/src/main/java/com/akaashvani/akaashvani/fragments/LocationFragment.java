@@ -95,10 +95,12 @@ public class LocationFragment extends Fragment implements
     private Pubnub mPubnub;
     private String channelName = "Sujit";
     private static String groupName;
+    private static String groupID;
     AkaashVaniApplication akaashVaniApplication;
 
-    public static LocationFragment newInstance(String param1, String param2) {
+    public static LocationFragment newInstance(String param1, String param2, String param3) {
         groupName = param2;
+        LocationFragment.groupID = param3;
         LocationFragment fragment = new LocationFragment();
         return fragment;
     }
@@ -443,9 +445,11 @@ public class LocationFragment extends Fragment implements
             setCamera();
             counter ++;
         }
+
+        Log.i(TAG, "GroupId"+groupID);
         // Broadcast information on PubNub Channel
         PubNubManager.broadcastLocation(mPubnub, channelName, location.getLatitude(),
-                location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName);
+                location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID);
 
         myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         updateCircle(myLatLng);

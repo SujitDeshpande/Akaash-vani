@@ -27,6 +27,7 @@ public class DetailsActivity extends BaseActivity implements parseGroupsAPI.Call
     private Button mStop;
     private Thread thread;
     private ArrayList<String> mGroupsArrayList = new ArrayList<>();
+    private ArrayList<ParseObject> mGroupsObjList = new ArrayList<>();
     private GroupRecycleViewAdapter mGrpAdapter;
     private RecyclerView mGrpRecyclerView;
 
@@ -101,12 +102,14 @@ public class DetailsActivity extends BaseActivity implements parseGroupsAPI.Call
     public void getMyGroupsSuccess(List<ParseObject> userGroupList) {
         dismissProgressDialog();
         if (userGroupList != null && userGroupList.size() > 0) {
-            mGroupsArrayList = new ArrayList<>();
+            //mGroupsArrayList = new ArrayList<>();
+            mGroupsObjList = new ArrayList<>();
             for (ParseObject userGroupObj : userGroupList) {
-                mGroupsArrayList.add(userGroupObj.getParseObject("group").getString("name"));
+                //mGroupsArrayList.add(userGroupObj.getParseObject("group").getString("name"));
                 Log.i("getMyGroupsSuccess", userGroupObj.getParseObject("group").getString("name"));
+                mGroupsObjList.add(userGroupObj.getParseObject("group"));
             }
-            GroupRecycleViewAdapter groupRecycleViewAdapter = new GroupRecycleViewAdapter(DetailsActivity.this, mGroupsArrayList);
+            GroupRecycleViewAdapter groupRecycleViewAdapter = new GroupRecycleViewAdapter(DetailsActivity.this, mGroupsObjList);
             mList.setAdapter(groupRecycleViewAdapter);
         } else {
             Toast.makeText(DetailsActivity.this, R.string.no_groups_available, Toast.LENGTH_SHORT).show();
