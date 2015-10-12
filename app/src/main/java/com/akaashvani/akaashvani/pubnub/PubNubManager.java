@@ -2,7 +2,6 @@ package com.akaashvani.akaashvani.pubnub;
 
 import android.util.Log;
 
-import com.akaashvani.akaashvani.AkaashVaniApplication;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -17,7 +16,6 @@ import org.json.JSONObject;
 public class PubNubManager {
 
     public final static String TAG = "PUBNUB";
-    AkaashVaniApplication application;
 
     public static Pubnub startPubnub() {
         Log.d(TAG, "Initializing PubNub");
@@ -37,16 +35,19 @@ public class PubNubManager {
 
 
     public static void broadcastLocation(Pubnub pubnub, String channelName, double latitude,
-                                         double longitude, String user) {
+                                         double longitude, String user, String groupName) {
         JSONObject message = new JSONObject();
         try {
             message.put("lat", latitude);
             message.put("lon", longitude);
             message.put("user", user);
+            message.put("group", groupName);
         } catch (JSONException e) {
             Log.e(TAG, e.toString());
         }
         Log.d(TAG, "Sending JSON Message: " + message.toString());
+        Log.i(TAG, "Channel Name: "+channelName);
+
         pubnub.publish(channelName, message, publishCallback);
     }
 

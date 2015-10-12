@@ -21,9 +21,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.akaashvani.akaashvani.AkaashVaniApplication;
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.geofence.Constants;
 import com.akaashvani.akaashvani.geofence.GeofenceTransitionsIntentService;
+import com.akaashvani.akaashvani.pubnub.PubNubManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -47,6 +49,8 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.ParseUser;
+import com.pubnub.api.Pubnub;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -87,7 +91,14 @@ public class LocationFragment extends Fragment implements
     private Circle mapCircle;
     private LatLng myLatLng;
 
+    // PubNub
+    private Pubnub mPubnub;
+    private String channelName = "Sujit";
+    private static String groupName;
+    AkaashVaniApplication akaashVaniApplication;
+
     public static LocationFragment newInstance(String param1, String param2) {
+        groupName = param2;
         LocationFragment fragment = new LocationFragment();
         return fragment;
     }
@@ -100,6 +111,8 @@ public class LocationFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         updateValuesFromBundle(savedInstanceState);
+
+        mPubnub = akaashVaniApplication.startPubnub();
 
         mGeofenceList = new ArrayList<Geofence>();
         mGeofencePendingIntent = null;
@@ -430,6 +443,10 @@ public class LocationFragment extends Fragment implements
             setCamera();
             counter ++;
         }
+        // Broadcast information on PubNub Channel
+        PubNubManager.broadcastLocation(mPubnub, channelName, location.getLatitude(),
+                location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName);
+
         myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         updateCircle(myLatLng);
         Log.i(TAG, "onLocationChanged " + "Latitude: " + mCurrentLocation.getLatitude() + " Longitude: " + mCurrentLocation.getLongitude());

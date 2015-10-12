@@ -1,6 +1,7 @@
 package com.akaashvani.akaashvani;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.akaashvani.akaashvani.preference.PreferenceUtil;
 import com.digits.sdk.android.Digits;
@@ -39,12 +40,17 @@ public class AkaashVaniApplication extends Application {
         // Initialize Fabric
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new TwitterCore(authConfig), new Digits());
-
+        pubnub = startPubnub();
         init();
 
         // initialize a Shared Preference
         PreferenceUtil.init(this, TAG);
 
+    }
+
+    public static Pubnub startPubnub() {
+        Log.d(TAG, "Initializing PubNub");
+        return new Pubnub("pub-c-704d1233-e6de-454f-9ab8-4c1dc966906e", "sub-c-a0ec95c8-2d8c-11e5-bda8-02ee2ddab7fe");
     }
 
     /**

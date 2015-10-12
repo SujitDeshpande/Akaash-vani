@@ -46,7 +46,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
     }
 
     @Override
-    public void onBindViewHolder(GroupNameViewHolder holder, int position) {
+    public void onBindViewHolder(GroupNameViewHolder holder, final int position) {
         if (!TextUtils.isEmpty((CharSequence) data.get(position))) {
             holder.mGrpNameTextView.setText((CharSequence) data.get(position));
         }
@@ -56,7 +56,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TabActivity.class);
                 //intent.putExtra("groupObjId", currentGrp.getObjectId());
-                //intent.putExtra("groupName", currentGrp.getName());
+                intent.putExtra("groupName", (CharSequence) data.get(position));
 
                 mContext.startActivity(intent);
             }

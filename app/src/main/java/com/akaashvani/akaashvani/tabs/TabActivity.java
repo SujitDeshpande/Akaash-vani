@@ -6,9 +6,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.adapters.TabPagerAdapter;
@@ -31,13 +33,13 @@ public class TabActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
 
-        setToolBarComponents(showOverFlowMenuBool);
+        //setToolBarComponents(showOverFlowMenuBool);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        //TextView toolbarTextView = (TextView) toolbar.findViewById(R.id.toolbar_heading);
-        //toolbarTextView.setText(getIntent().getStringExtra("groupName"));
-//        setSupportActionBar(toolbar);
-//        toolbar.showOverflowMenu();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        TextView toolbarTextView = (TextView) toolbar.findViewById(R.id.toolbar_heading);
+        toolbarTextView.setText(getIntent().getStringExtra("groupName"));
+        setSupportActionBar(toolbar);
+        toolbar.showOverflowMenu();
 
         //String strGroupObjId = getIntent().getStringExtra("groupObjId");
 
@@ -68,7 +70,7 @@ public class TabActivity extends BaseActivity {
         //Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(), TabActivity.this));
+        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(), TabActivity.this, getIntent().getStringExtra("groupName")));
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);

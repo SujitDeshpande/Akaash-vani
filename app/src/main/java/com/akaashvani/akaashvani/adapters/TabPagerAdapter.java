@@ -15,10 +15,12 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
     //private final String mGroupObjId;
     private String tabTitles[] = new String[]{"Location", "Chat"};
     private Context context;
+    private String groupName;
 
-    public TabPagerAdapter(FragmentManager fm, Context context) {
+    public TabPagerAdapter(FragmentManager fm, Context context, String groupName) {
         super(fm);
         this.context = context;
+        this.groupName = groupName;
         //mGroupObjId = strGroupObjId;
     }
 
@@ -32,11 +34,11 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                return LocationFragment.newInstance("" + position, "");
+                return LocationFragment.newInstance("" + position, groupName);
             case 1:
                 return ChatFragment.newInstance("" + position, "");
             default:
-                return LocationFragment.newInstance("" + position, "");
+                return LocationFragment.newInstance("" + position, groupName);
         }
     }
 
