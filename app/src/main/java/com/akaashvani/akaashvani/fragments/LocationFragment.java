@@ -50,10 +50,16 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseUser;
+import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import static com.google.android.gms.internal.zzid.runOnUiThread;
 
 public class LocationFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
@@ -93,14 +99,13 @@ public class LocationFragment extends Fragment implements
 
     // PubNub
     private Pubnub mPubnub;
-    private String channelName = "Sujit";
     private static String groupName;
     private static String groupID;
     AkaashVaniApplication akaashVaniApplication;
 
     public static LocationFragment newInstance(String param1, String param2, String param3) {
         groupName = param2;
-        LocationFragment.groupID = param3;
+        groupID = param3;
         LocationFragment fragment = new LocationFragment();
         return fragment;
     }
@@ -132,6 +137,46 @@ public class LocationFragment extends Fragment implements
         checkLocationSettings();
 
         mGoogleApiClient.connect();
+
+        mPubnub.hereNow(groupID, new Callback() {
+            @Override
+            public void successCallback(String channel, final Object message) {
+                super.successCallback(channel, message);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Toast.makeText(getActivity(), "Users in list " + message.toString(), Toast.LENGTH_SHORT).show();
+                        Log.d("users in list", message.toString());
+                    }
+                });
+
+
+            }
+        });
+
+        PubNubManager.subscribe(mPubnub, groupID, new Callback() {
+            @Override
+            public void successCallback(String channel, final Object message) {
+                super.successCallback(channel, message);
+                try {
+                    JSONObject iob = (JSONObject) message;
+                    //final double lat = iob.getDouble("latitude");
+                    //final double lon = iob.getDouble("longitude");
+                    final String user = iob.getString("userName");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!user.equals(ParseUser.getCurrentUser().getUsername())){
+                                Log.d(TAG, "User: " + user);
+                            }
+                        }
+                    });
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                } ;
+
+            }
+        });
     }
 
     @Override
@@ -448,6 +493,8 @@ public class LocationFragment extends Fragment implements
         // Broadcast information on PubNub Channel
         PubNubManager.broadcastLocation(mPubnub, groupID, location.getLatitude(),
                 location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID);
+
+
 
         myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         updateCircle(myLatLng);
