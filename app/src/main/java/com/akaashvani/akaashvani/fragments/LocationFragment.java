@@ -445,10 +445,8 @@ public class LocationFragment extends Fragment implements
             setCamera();
             counter ++;
         }
-
-        Log.i(TAG, "GroupId"+groupID);
         // Broadcast information on PubNub Channel
-        PubNubManager.broadcastLocation(mPubnub, channelName, location.getLatitude(),
+        PubNubManager.broadcastLocation(mPubnub, groupID, location.getLatitude(),
                 location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID);
 
         myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());

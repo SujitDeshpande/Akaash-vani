@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,6 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
                 Intent intent = new Intent(mContext, TabActivity.class);
                 intent.putExtra("groupID", parseData.get(position).getObjectId().toString());
                 intent.putExtra("groupName", parseData.get(position).getString("name"));
-                Log.i("TAG", parseData.get(position).getObjectId().toString());
                 mContext.startActivity(intent);
             }
         });
