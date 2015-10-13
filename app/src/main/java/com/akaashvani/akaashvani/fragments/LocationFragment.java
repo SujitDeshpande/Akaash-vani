@@ -25,6 +25,7 @@ import com.akaashvani.akaashvani.AkaashVaniApplication;
 import com.akaashvani.akaashvani.R;
 import com.akaashvani.akaashvani.geofence.Constants;
 import com.akaashvani.akaashvani.geofence.GeofenceTransitionsIntentService;
+import com.akaashvani.akaashvani.parse.Group;
 import com.akaashvani.akaashvani.pubnub.PubNubManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,6 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.android.gms.internal.zzid.runOnUiThread;
@@ -103,6 +105,9 @@ public class LocationFragment extends Fragment implements
     private static String groupID;
     AkaashVaniApplication akaashVaniApplication;
 
+    Group groupOthers, groupMe;
+    Map<String, Group> groupMap = new HashMap<>();
+
     public static LocationFragment newInstance(String param1, String param2, String param3) {
         groupName = param2;
         groupID = param3;
@@ -120,7 +125,8 @@ public class LocationFragment extends Fragment implements
         updateValuesFromBundle(savedInstanceState);
 
         mPubnub = akaashVaniApplication.startPubnub();
-
+        //groupOthers = new Group();
+        groupMe = new Group();
         mGeofenceList = new ArrayList<Geofence>();
         mGeofencePendingIntent = null;
         mSharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,
@@ -160,20 +166,26 @@ public class LocationFragment extends Fragment implements
                 super.successCallback(channel, message);
                 try {
                     JSONObject iob = (JSONObject) message;
-                    //final double lat = iob.getDouble("latitude");
-                    //final double lon = iob.getDouble("longitude");
+                    final double lat = iob.getDouble("latitude");
+                    final double lon = iob.getDouble("longitude");
                     final String user = iob.getString("userName");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!user.equals(ParseUser.getCurrentUser().getUsername())){
+                            if (!user.equals(ParseUser.getCurrentUser().getUsername())) {
                                 Log.d(TAG, "User: " + user);
+                                groupOthers = new Group();
+                                groupOthers.setUserName(user);
+                                groupOthers.setLatitude(lat);
+                                groupOthers.setLongitude(lon);
+                                groupMap.put(user, groupOthers);
                             }
                         }
                     });
                 } catch (JSONException e1) {
                     e1.printStackTrace();
-                } ;
+                }
+                ;
 
             }
         });
@@ -485,6 +497,11 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        groupMe.setUserName(ParseUser.getCurrentUser().getUsername());
+        groupMe.setLatitude(location.getLatitude());
+        groupMe.setLongitude(location.getLongitude());
+        groupMap.put(ParseUser.getCurrentUser().getUsername(), groupMe);
+
         addMarkers();
         while (counter < 2){
             setCamera();
@@ -494,7 +511,11 @@ public class LocationFragment extends Fragment implements
         PubNubManager.broadcastLocation(mPubnub, groupID, location.getLatitude(),
                 location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID);
 
-
+        for (Map.Entry<String,Group> entry : groupMap.entrySet()) {
+            String key = entry.getKey();
+            Group userDetail = entry.getValue();
+            Log.i(TAG, "Key: "+key+" |Value: "+userDetail.getUserName());
+        }
 
         myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         updateCircle(myLatLng);
