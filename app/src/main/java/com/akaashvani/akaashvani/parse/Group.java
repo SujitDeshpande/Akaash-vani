@@ -1,11 +1,14 @@
 package com.akaashvani.akaashvani.parse;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Sujit on 13/10/15.
  */
 public class Group {
     private String userName;
     private double latitude, longitude;
+    private LatLng myLatLng = new LatLng(0,0);
 
     public String getUserName() {
         return userName;
@@ -15,19 +18,11 @@ public class Group {
         this.userName = userName;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public LatLng getMyLatLng() {
+        return myLatLng;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setMyLatLng(LatLng myLatLng) {
+        this.myLatLng = myLatLng;
     }
 }

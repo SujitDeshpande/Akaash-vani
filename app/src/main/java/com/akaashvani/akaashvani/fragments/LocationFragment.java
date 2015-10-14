@@ -126,7 +126,7 @@ public class LocationFragment extends Fragment implements
 
         mPubnub = akaashVaniApplication.startPubnub();
         //groupOthers = new Group();
-        groupMe = new Group();
+
         mGeofenceList = new ArrayList<Geofence>();
         mGeofencePendingIntent = null;
         mSharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,
@@ -176,8 +176,7 @@ public class LocationFragment extends Fragment implements
                                 Log.d(TAG, "User: " + user);
                                 groupOthers = new Group();
                                 groupOthers.setUserName(user);
-                                groupOthers.setLatitude(lat);
-                                groupOthers.setLongitude(lon);
+                                groupOthers.setMyLatLng(new LatLng(lat, lon));
                                 groupMap.put(user, groupOthers);
                             }
                         }
@@ -207,7 +206,7 @@ public class LocationFragment extends Fragment implements
         // Changing marker icon
         d = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_marker).getCurrent();
         bmp1 = Bitmap.createScaledBitmap(d.getBitmap(), d.getBitmap().getWidth() / 7, d.getBitmap().getHeight() / 7, false);
-        e = (BitmapDrawable) getResources().getDrawable(R.drawable.me).getCurrent();
+        e = (BitmapDrawable) getResources().getDrawable(R.drawable.person).getCurrent();
         bmp2 = Bitmap.createScaledBitmap(e.getBitmap(), (int) (e.getBitmap().getWidth() / 1), (int) (e.getBitmap().getHeight() / 1), false);
         bmp2 = getRoundedShape(bmp2);
     }
@@ -272,6 +271,25 @@ public class LocationFragment extends Fragment implements
 
     }
 
+    protected void reDrawMarkers(Map<String, Group> locationMap) {
+        // create marker
+        googleMap.clear();
+
+        for (Map.Entry<String,Group> entry : locationMap.entrySet()) {
+            String key = entry.getKey();
+            Group userDetail = entry.getValue();
+            Log.i(TAG, "Key: "+key+" |Value: "+userDetail.getUserName()+" |Lat: "+userDetail.getMyLatLng().latitude);
+            Double lat = userDetail.getMyLatLng().latitude;
+            Double lon = userDetail.getMyLatLng().longitude;
+            marker = new MarkerOptions().position(
+                    new LatLng(lat, lon)).title(key);
+            marker.icon(BitmapDescriptorFactory.fromBitmap(overlay(bmp1, bmp2)));
+
+            // adding marker
+            googleMap.addMarker(marker);
+        }
+    }
+
     public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
 
         int targetWidth = 140;
@@ -301,7 +319,7 @@ public class LocationFragment extends Fragment implements
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        canvas.drawBitmap(bmp2, new Rect(0, 0, 200, 200), new Rect(45, 20, 240, 235), null);
+        canvas.drawBitmap(bmp2, new Rect(0, 0, 200, 220), new Rect(48, 25, 228, 228), null);
         return bmOverlay;
     }
 
@@ -497,24 +515,20 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        groupMe = new Group();
         groupMe.setUserName(ParseUser.getCurrentUser().getUsername());
-        groupMe.setLatitude(location.getLatitude());
-        groupMe.setLongitude(location.getLongitude());
+        groupMe.setMyLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
         groupMap.put(ParseUser.getCurrentUser().getUsername(), groupMe);
 
-        addMarkers();
-        while (counter < 2){
-            setCamera();
-            counter ++;
-        }
         // Broadcast information on PubNub Channel
         PubNubManager.broadcastLocation(mPubnub, groupID, location.getLatitude(),
                 location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID);
 
-        for (Map.Entry<String,Group> entry : groupMap.entrySet()) {
-            String key = entry.getKey();
-            Group userDetail = entry.getValue();
-            Log.i(TAG, "Key: "+key+" |Value: "+userDetail.getUserName());
+        //addMarkers();
+        reDrawMarkers(groupMap);
+        while (counter < 2){
+            setCamera();
+            counter ++;
         }
 
         myLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
