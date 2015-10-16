@@ -204,8 +204,8 @@ public class LocationFragment extends Fragment implements
 
     protected void initializeIcons(){
         // Changing marker icon
-        d = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_marker).getCurrent();
-        bmp1 = Bitmap.createScaledBitmap(d.getBitmap(), d.getBitmap().getWidth() / 7, d.getBitmap().getHeight() / 7, false);
+        d = (BitmapDrawable) getResources().getDrawable(R.drawable.pin_red).getCurrent();
+        bmp1 = Bitmap.createScaledBitmap(d.getBitmap(), d.getBitmap().getWidth() / 10, d.getBitmap().getHeight() / 10, false);
         e = (BitmapDrawable) getResources().getDrawable(R.drawable.person).getCurrent();
         bmp2 = Bitmap.createScaledBitmap(e.getBitmap(), (int) (e.getBitmap().getWidth() / 1), (int) (e.getBitmap().getHeight() / 1), false);
         bmp2 = getRoundedShape(bmp2);
@@ -319,7 +319,7 @@ public class LocationFragment extends Fragment implements
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        canvas.drawBitmap(bmp2, new Rect(0, 0, 200, 220), new Rect(48, 25, 228, 228), null);
+        canvas.drawBitmap(bmp2, new Rect(0, 0, 210, 220), new Rect(53, 48, 235, 235), null);
         return bmOverlay;
     }
 
