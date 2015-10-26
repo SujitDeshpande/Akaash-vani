@@ -306,10 +306,9 @@ public class LocationFragment extends Fragment implements
                 Path.Direction.CCW);
 
         canvas.clipPath(path);
-        Bitmap sourceBitmap = scaleBitmapImage;
-        canvas.drawBitmap(sourceBitmap,
-                new Rect(0, 0, sourceBitmap.getWidth(),
-                        sourceBitmap.getHeight()),
+        canvas.drawBitmap(scaleBitmapImage,
+                new Rect(0, 0, scaleBitmapImage.getWidth(),
+                        scaleBitmapImage.getHeight()),
                 new Rect(0, 0, targetWidth,
                         targetHeight), null);
         return targetBitmap;
@@ -350,7 +349,7 @@ public class LocationFragment extends Fragment implements
         mGeofencesAdded = !mGeofencesAdded;
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putBoolean(Constants.GEOFENCES_ADDED_KEY, mGeofencesAdded);
-        editor.commit();
+        editor.apply();
     }
 
     public void populateGeofenceList() {
