@@ -50,6 +50,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.parse.ParseUser;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
@@ -59,6 +60,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.android.gms.internal.zzid.runOnUiThread;
@@ -104,6 +106,8 @@ public class LocationFragment extends Fragment implements
     private static String groupName;
     private static String groupID;
     AkaashVaniApplication akaashVaniApplication;
+    private List<LatLng> myLocation = new ArrayList<LatLng>();
+    private int myCounter = 0;
 
     Group groupOthers, groupMe;
     Map<String, Group> groupMap = new HashMap<>();
@@ -169,6 +173,9 @@ public class LocationFragment extends Fragment implements
                     final double lat = iob.getDouble("latitude");
                     final double lon = iob.getDouble("longitude");
                     final String user = iob.getString("userName");
+                    final String myLocStr = cutString(iob.getString("LocArray"), 1);
+                    Log.i("T", myLocStr);
+                    final List<LatLng> myLoc = convertToArray(myLocStr);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -177,6 +184,7 @@ public class LocationFragment extends Fragment implements
                                 groupOthers = new Group();
                                 groupOthers.setUserName(user);
                                 groupOthers.setMyLatLng(new LatLng(lat, lon));
+                                groupOthers.setMyLocation(myLoc);
                                 groupMap.put(user, groupOthers);
                             }
                         }
@@ -188,6 +196,32 @@ public class LocationFragment extends Fragment implements
 
             }
         });
+    }
+
+    public String cutString(String str, int startPos) {
+        if (str.length() > 0) {
+            str = str.trim();
+            str = str.substring(startPos, str.length()-1);
+        }
+        return str;
+    }
+
+    public List<LatLng> convertToArray(String myLoc){
+        List<LatLng> locn = new ArrayList<LatLng>();
+        /* String to split. */
+        String str = myLoc;
+        String[] temp;
+
+        /* delimiter */
+        String delimiter = ", ";
+        /* given string will be split by the argument delimiter provided. */
+        temp = str.split(delimiter);
+        /* print substrings */
+        for(int i =0; i < temp.length ; i++){
+            String cutString = cutString(temp[i], 10);
+            locn.add(new LatLng(Double.parseDouble(cutString.substring(0, cutString.indexOf(","))), Double.parseDouble(cutString.substring(cutString.indexOf(",")+1, cutString.length()))));
+        }
+        return locn;
     }
 
     @Override
@@ -287,6 +321,13 @@ public class LocationFragment extends Fragment implements
 
             // adding marker
             googleMap.addMarker(marker);
+
+            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+            for (int z = 0; z < userDetail.getMyLocation().size(); z++) {
+                LatLng point = userDetail.getMyLocation().get(z);
+                options.add(point);
+            }
+            googleMap.addPolyline(options);
         }
     }
 
@@ -514,14 +555,17 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        myLocation.add(myCounter++, new LatLng(location.getLatitude(), location.getLongitude()));
+        Log.i("T", String.valueOf(myCounter));
         groupMe = new Group();
         groupMe.setUserName(ParseUser.getCurrentUser().getUsername());
         groupMe.setMyLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+        groupMe.setMyLocation(myLocation);
         groupMap.put(ParseUser.getCurrentUser().getUsername(), groupMe);
 
         // Broadcast information on PubNub Channel
         PubNubManager.broadcastLocation(mPubnub, groupID, location.getLatitude(),
-                location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID);
+                location.getLongitude(), ParseUser.getCurrentUser().getUsername(), groupName, groupID, myLocation);
 
         //addMarkers();
         reDrawMarkers(groupMap);

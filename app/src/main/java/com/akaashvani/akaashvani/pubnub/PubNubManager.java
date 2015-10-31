@@ -2,6 +2,7 @@ package com.akaashvani.akaashvani.pubnub;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -9,6 +10,8 @@ import com.pubnub.api.PubnubException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by aditlal on 18/07/15.
@@ -35,7 +38,7 @@ public class PubNubManager {
 
 
     public static void broadcastLocation(Pubnub pubnub, String channelName, double latitude,
-                                         double longitude, String user, String groupName, String groupID) {
+                                         double longitude, String user, String groupName, String groupID, List<LatLng> myLocation) {
         JSONObject message = new JSONObject();
         try {
             message.put("latitude", latitude);
@@ -43,6 +46,7 @@ public class PubNubManager {
             message.put("userName", user);
             message.put("groupName", groupName);
             message.put("groupID", groupID);
+            message.put("LocArray", myLocation);
         } catch (JSONException e) {
             Log.e(TAG, e.toString());
         }
